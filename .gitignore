@@ -1,43 +1,5 @@
-# Local environment
-.env
-.env.*
-!.env.example
-.venv/
-venv/
-env/
-
-# Python
-__pycache__/
-*.py[cod]
-*$py.class
-.pytest_cache/
-.mypy_cache/
-.ruff_cache/
-.coverage
-htmlcov/
-
-# Jupyter
-.ipynb_checkpoints/
-
 # Data files
-Dataset/
 *.csv
-*.xlsx
-*.xls
-*.parquet
-*.feather
-*.pkl
-*.pickle
 
-# Logs and temporary files
-*.log
-*.tmp
-*.temp
-tmp/
-temp/
-
-# OS and editor files
-.DS_Store
-Thumbs.db
-.vscode/
-.idea/
+# Python cache
+__pycache__/
