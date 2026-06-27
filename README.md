@@ -12,36 +12,36 @@
 
 <hr>
 
-## 📋 Visão Geral
+## 📋 Overview
 
-O **CreditMaster** é um microsserviço *headless* de Inteligência Artificial Generativa voltado para o setor bancário. O objetivo principal é a automação do fluxo de análise de risco e a geração automatizada de pareceres técnicos de crédito. 
+**CreditMaster** is a headless Generative Artificial Intelligence microservice tailored for the banking sector. Its primary objective is to automate the risk analysis workflow and generate technical credit opinions automatically.
 
-A solução adota uma abordagem de execução **100% on-premise (local)**, mitigando riscos de conformidade com a LGPD e garantindo o sigilo bancário absoluto ao eliminar a necessidade de tráfego de dados para APIs proprietárias em nuvem.
+The solution adopts a **100% on-premise (local)** execution approach, mitigating data privacy compliance risks (such as GDPR/LGPD) and ensuring absolute banking secrecy by eliminating the need to route sensitive financial data to proprietary cloud APIs.
 
 ---
 
-## 🏗️ Arquitetura Híbrida
+## 🏗️ Hybrid Architecture
 
-O núcleo do sistema opera através de uma composição de duas técnicas avançadas de engenharia de prompt e IA:
+The core of the system operates through a composition of two advanced prompt engineering and AI techniques:
 
 <table align="center" width="100%">
   <tr>
     <td width="50%" valign="top">
       <h3>🎯 Fine-Tuning (QLoRA)</h3>
-      <p>Modificação estrutural dos pesos neurais do modelo base <strong>Llama 3.1 8B Instruct</strong> via biblioteca <strong>Unsloth</strong>.</p>
+      <p>Structural modification of the <strong>Llama 3.1 8B Instruct</strong> base model's neural weights via the <strong>Unsloth</strong> library.</p>
       <ul>
-        <li>Internalização do jargão técnico bancário.</li>
-        <li>Padronização do formato sintático dos pareceres.</li>
-        <li>Otimização extrema para execução local.</li>
+        <li>Internalization of banking technical jargon.</li>
+        <li>Standardization of the syntactic format of credit opinions.</li>
+        <li>Extreme memory optimization for local GPU execution.</li>
       </ul>
     </td>
     <td width="50%" valign="top">
       <h3>📚 RAG (Retrieval-Augmented Generation)</h3>
-      <p>Injeção dinâmica de contexto factual e normativo em tempo real através de um banco vetorial local.</p>
+      <p>Dynamic injection of factual and regulatory context in real-time through a local vector database.</p>
       <ul>
-        <li>Consulta a manuais internos de crédito e resoluções do BACEN.</li>
-        <li>Eliminação drástica de alucinações matemáticas ou normativas.</li>
-        <li>Rastreabilidade vacinal das tomadas de decisão.</li>
+        <li>Queries against internal credit manuals and Central Bank resolutions.</li>
+        <li>Drastic elimination of mathematical and regulatory hallucinations.</li>
+        <li>Bulletproof traceability for decision-making processes.</li>
       </ul>
     </td>
   </tr>
@@ -49,24 +49,24 @@ O núcleo do sistema opera através de uma composição de duas técnicas avanç
 
 ---
 
-## 🛠️ Stack Tecnológico
+## 🛠️ Tech Stack
 
 <div align="center">
   <table>
     <tr>
-      <td><b>IA & Modelagem</b></td>
+      <td><b>AI & Modeling</b></td>
       <td>Llama 3.1 8B, Unsloth, QLoRA, GGUF</td>
     </tr>
     <tr>
-      <td><b>Inferência & Motor Local</b></td>
+      <td><b>Inference & Local Engine</b></td>
       <td>Ollama, CUDA Toolkit</td>
     </tr>
     <tr>
-      <td><b>Pipeline de Dados & Vetores</b></td>
+      <td><b>Data Pipeline & Vectors</b></td>
       <td>ChromaDB / FAISS, LangChain, Pandas</td>
     </tr>
     <tr>
-      <td><b>Interface de Serviço</b></td>
+      <td><b>Service Interface</b></td>
       <td>FastAPI / Flask (REST API), Python CLI</td>
     </tr>
   </table>
@@ -74,22 +74,22 @@ O núcleo do sistema opera através de uma composição de duas técnicas avanç
 
 ---
 
-## 🗂️ Organização do Repositório
+## 🗂️ Repository Structure
 
 <details>
-<summary>📂 Clique para expandir a árvore de diretórios</summary>
+<summary>📂 Click to expand the directory tree</summary>
 
 ```text
-├── .kaggle/                    # Credenciais de autenticação da API Kaggle
+├── .kaggle/                    # Kaggle API authentication credentials
 ├── data/
-│   ├── raw/                    # Massa de dados tabular bruta (.csv)
-│   └── processed/              # Dataset de instruções mapeado (.jsonl)
+│   ├── raw/                    # Raw tabular data mass (.csv)
+│   └── processed/              # Mapped instruction dataset (.jsonl)
 ├── src/
-│   ├── data_engineering.py     # ETL e pipeline de geração sintética
-│   ├── train.py                # Rotina de Fine-Tuning local (Unsloth)
-│   ├── rag_pipeline.py         # Chunking, embeddings e busca vetorial
-│   ├── api.py                  # Microsserviço HTTP REST
-│   └── client_console.py       # Console de interface para validação
-├── docs/                       # Manuais de políticas e regulação em PDF
-├── Modelfile                   # Configuração de manifesto do Ollama
-└── requirements.txt            # Dependências do ecossistema Python
+│   ├── data_engineering.py     # ETL and synthetic generation pipeline
+│   ├── train.py                # Local Fine-Tuning routine (Unsloth)
+│   ├── rag_pipeline.py         # Chunking, embeddings, and vector search
+│   ├── api.py                  # REST HTTP Microservice
+│   └── client_console.py       # Console interface for validation
+├── docs/                       # Policy and regulation manuals in PDF
+├── Modelfile                   # Ollama manifest configuration
+└── requirements.txt            # Python ecosystem dependencies
