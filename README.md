@@ -71,25 +71,3 @@ The core of the system operates through a composition of two advanced prompt eng
     </tr>
   </table>
 </div>
-
----
-
-## 🗂️ Repository Structure
-
-<details>
-<summary>📂 Click to expand the directory tree</summary>
-
-```text
-├── .kaggle/                    # Kaggle API authentication credentials
-├── data/
-│   ├── raw/                    # Raw tabular data mass (.csv)
-│   └── processed/              # Mapped instruction dataset (.jsonl)
-├── src/
-│   ├── data_engineering.py     # ETL and synthetic generation pipeline
-│   ├── train.py                # Local Fine-Tuning routine (Unsloth)
-│   ├── rag_pipeline.py         # Chunking, embeddings, and vector search
-│   ├── api.py                  # REST HTTP Microservice
-│   └── client_console.py       # Console interface for validation
-├── docs/                       # Policy and regulation manuals in PDF
-├── Modelfile                   # Ollama manifest configuration
-└── requirements.txt            # Python ecosystem dependencies
