@@ -28,50 +28,50 @@ POSITIVE_STATUS = "Fully Paid"
 NEGATIVE_STATUS = "Charged Off"
 
 PURPOSES = {
-    "car": "compra de veiculo",
-    "credit_card": "refinanciamento de cartao de credito",
-    "debt_consolidation": "consolidacao de dividas",
-    "educational": "educacao",
-    "home_improvement": "reforma residencial",
-    "house": "moradia",
-    "major_purchase": "compra relevante",
-    "medical": "despesas medicas",
-    "moving": "mudanca",
-    "other": "outra finalidade",
-    "renewable_energy": "energia renovavel",
-    "small_business": "pequeno negocio",
-    "vacation": "viagem",
-    "wedding": "casamento",
+    "car": "vehicle purchase",
+    "credit_card": "credit card refinancing",
+    "debt_consolidation": "debt consolidation",
+    "educational": "education",
+    "home_improvement": "home improvement",
+    "house": "housing",
+    "major_purchase": "major purchase",
+    "medical": "medical expenses",
+    "moving": "moving expenses",
+    "other": "other purpose",
+    "renewable_energy": "renewable energy",
+    "small_business": "small business",
+    "vacation": "travel",
+    "wedding": "wedding",
 }
 
 HOME_OWNERSHIP = {
-    "ANY": "nao informado",
-    "MORTGAGE": "imovel financiado",
-    "NONE": "nao informado",
-    "OTHER": "outro",
-    "OWN": "imovel proprio",
-    "RENT": "aluguel",
+    "ANY": "not provided",
+    "MORTGAGE": "mortgaged home",
+    "NONE": "not provided",
+    "OTHER": "other",
+    "OWN": "owned home",
+    "RENT": "rented home",
 }
 
 
 def money(value):
     number = to_float(value)
     if number is None:
-        return "nao informado"
-    return f"US$ {number:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
+        return "not provided"
+    return f"US$ {number:,.2f}"
 
 
 def percent(value):
     number = to_float(value)
     if number is None:
-        return "nao informado"
-    return f"{number:.2f}%".replace(".", ",")
+        return "not provided"
+    return f"{number:.2f}%"
 
 
 def integer(value):
     number = to_float(value)
     if number is None:
-        return "nao informado"
+        return "not provided"
     return str(int(round(number)))
 
 
@@ -92,7 +92,7 @@ def to_float(value):
 
 def clean_text(value):
     value = (value or "").strip()
-    return value if value else "nao informado"
+    return value if value else "not provided"
 
 
 def translate_purpose(value):
@@ -108,24 +108,24 @@ def translate_home(value):
 def translate_term(value):
     value = clean_text(value)
     if "36" in value:
-        return "36 meses"
+        return "36 months"
     if "60" in value:
-        return "60 meses"
+        return "60 months"
     return value
 
 
 def classify_fico(score):
     if score is None:
-        return "sem score informado"
+        return "no score provided"
     if score >= 760:
-        return "score muito forte"
+        return "a very strong score"
     if score >= 720:
-        return "score forte"
+        return "a strong score"
     if score >= 680:
-        return "score adequado"
+        return "an adequate score"
     if score >= 640:
-        return "score moderado"
-    return "score fraco"
+        return "a moderate score"
+    return "a weak score"
 
 
 def risk_factors(row):
@@ -142,60 +142,60 @@ def risk_factors(row):
     term = clean_text(row.get("term"))
 
     if fico is None:
-        factors.append("ausencia de score FICO informado")
+        factors.append("missing FICO score")
     elif fico < 660:
-        factors.append("score FICO baixo")
+        factors.append("low FICO score")
     elif fico >= 720:
-        strengths.append("score FICO favoravel")
+        strengths.append("favorable FICO score")
 
     if dti is None:
-        factors.append("DTI nao informado")
+        factors.append("DTI not provided")
     elif dti > 30:
-        factors.append("endividamento elevado pelo DTI")
+        factors.append("high indebtedness based on DTI")
     elif dti <= 15:
-        strengths.append("DTI controlado")
+        strengths.append("controlled DTI")
 
     if delinquencies is not None and delinquencies > 0:
-        factors.append("historico recente de inadimplencia")
+        factors.append("recent delinquency history")
     elif delinquencies == 0:
-        strengths.append("sem atrasos nos ultimos dois anos")
+        strengths.append("no delinquencies in the last two years")
 
     if inquiries is not None and inquiries >= 3:
-        factors.append("muitas consultas recentes de credito")
+        factors.append("many recent credit inquiries")
 
     if revol_util is not None:
         if revol_util >= 80:
-            factors.append("alta utilizacao de credito rotativo")
+            factors.append("high revolving credit utilization")
         elif revol_util <= 35:
-            strengths.append("baixa utilizacao de credito rotativo")
+            strengths.append("low revolving credit utilization")
 
     if income and loan and loan / income > 0.45:
-        factors.append("valor solicitado alto em relacao a renda anual")
+        factors.append("requested amount is high relative to annual income")
     elif income and loan and loan / income <= 0.20:
-        strengths.append("valor solicitado proporcional a renda anual")
+        strengths.append("requested amount is proportional to annual income")
 
     if "60" in term:
-        factors.append("prazo longo aumenta exposicao ao risco")
+        factors.append("long term increases risk exposure")
 
     return strengths[:3], factors[:3]
 
 
 def build_input(row):
     return (
-        "Elabore um parecer de credito objetivo com base nos dados abaixo.\n"
-        f"Valor solicitado: {money(row.get('loan_amnt'))}\n"
-        f"Prazo: {translate_term(row.get('term'))}\n"
-        f"Renda anual: {money(row.get('annual_inc'))}\n"
-        f"Finalidade: {translate_purpose(row.get('purpose'))}\n"
-        f"Moradia: {translate_home(row.get('home_ownership'))}\n"
-        f"Tempo de emprego: {clean_text(row.get('emp_length'))}\n"
+        "Prepare an objective credit opinion based on the data below.\n"
+        f"Requested amount: {money(row.get('loan_amnt'))}\n"
+        f"Term: {translate_term(row.get('term'))}\n"
+        f"Annual income: {money(row.get('annual_inc'))}\n"
+        f"Purpose: {translate_purpose(row.get('purpose'))}\n"
+        f"Housing status: {translate_home(row.get('home_ownership'))}\n"
+        f"Employment length: {clean_text(row.get('emp_length'))}\n"
         f"DTI: {percent(row.get('dti'))}\n"
-        f"FICO minimo: {integer(row.get('fico_range_low'))}\n"
-        f"Atrasos em 2 anos: {integer(row.get('delinq_2yrs'))}\n"
-        f"Consultas em 6 meses: {integer(row.get('inq_last_6mths'))}\n"
-        f"Utilizacao do rotativo: {percent(row.get('revol_util'))}\n"
-        f"Contas abertas: {integer(row.get('open_acc'))}\n"
-        f"Registros publicos: {integer(row.get('pub_rec'))}"
+        f"Minimum FICO: {integer(row.get('fico_range_low'))}\n"
+        f"Delinquencies in 2 years: {integer(row.get('delinq_2yrs'))}\n"
+        f"Inquiries in 6 months: {integer(row.get('inq_last_6mths'))}\n"
+        f"Revolving utilization: {percent(row.get('revol_util'))}\n"
+        f"Open accounts: {integer(row.get('open_acc'))}\n"
+        f"Public records: {integer(row.get('pub_rec'))}"
     )
 
 
@@ -204,28 +204,28 @@ def build_opinion(row):
     approved = status == POSITIVE_STATUS
     strengths, factors = risk_factors(row)
     fico = classify_fico(to_float(row.get("fico_range_low")))
-    decision = "Aprovar" if approved else "Negar"
-    risk = "baixo a moderado" if approved else "elevado"
+    decision = "Approve" if approved else "Deny"
+    risk = "low to moderate" if approved else "high"
 
-    strengths_text = "; ".join(strengths) if strengths else "nao ha pontos fortes relevantes nos campos analisados"
-    factors_text = "; ".join(factors) if factors else "os principais indicadores informados nao apontam restricoes severas"
+    strengths_text = "; ".join(strengths) if strengths else "there are no relevant strengths in the analyzed fields"
+    factors_text = "; ".join(factors) if factors else "the main reported indicators do not show severe restrictions"
     conclusion = (
-        "O contrato historico foi quitado, portanto o perfil e aderente para aprovacao, "
-        "mantendo acompanhamento regular da capacidade de pagamento."
+        "The historical contract was fully repaid, so the profile is suitable for approval, "
+        "with regular monitoring of repayment capacity."
         if approved
         else
-        "O contrato historico evoluiu para perda, portanto o perfil deve ser recusado ou submetido a mitigadores fortes."
+        "The historical contract resulted in a loss, so the profile should be declined or subject to strong mitigants."
     )
 
     return {
-        "recomendacao": decision,
-        "risco": risk,
-        "parecer": (
-            f"Recomendacao: {decision}. Risco estimado {risk}. "
-            f"O proponente apresenta {fico}, DTI de {percent(row.get('dti'))}, "
-            f"renda anual de {money(row.get('annual_inc'))} e solicitacao de {money(row.get('loan_amnt'))} "
-            f"para {translate_purpose(row.get('purpose'))}. Pontos favoraveis: {strengths_text}. "
-            f"Pontos de atencao: {factors_text}. {conclusion}"
+        "recommendation": decision,
+        "risk": risk,
+        "opinion": (
+            f"Recommendation: {decision}. Estimated risk is {risk}. "
+            f"The applicant has {fico}, DTI of {percent(row.get('dti'))}, "
+            f"annual income of {money(row.get('annual_inc'))}, and requested amount of {money(row.get('loan_amnt'))} "
+            f"for {translate_purpose(row.get('purpose'))}. Strengths: {strengths_text}. "
+            f"Risk factors: {factors_text}. {conclusion}"
         ),
     }
 
@@ -252,7 +252,7 @@ def sample_rows(input_path, per_class, seed):
         reader = csv.DictReader(csv_file)
         missing = [column for column in COLUMNS if column not in reader.fieldnames]
         if missing:
-            raise ValueError(f"Colunas ausentes no CSV: {', '.join(missing)}")
+            raise ValueError(f"Missing columns in CSV: {', '.join(missing)}")
 
         for row in reader:
             status = row.get("loan_status")
@@ -263,7 +263,7 @@ def sample_rows(input_path, per_class, seed):
 
     if len(positive) < per_class or len(negative) < per_class:
         raise ValueError(
-            f"Amostra insuficiente: {len(positive)} positivos e {len(negative)} negativos para alvo {per_class}."
+            f"Insufficient sample: {len(positive)} positive and {len(negative)} negative records for target {per_class}."
         )
 
     rows = positive + negative
@@ -273,8 +273,8 @@ def sample_rows(input_path, per_class, seed):
 
 def write_jsonl(rows, output_path):
     system = (
-        "Voce e um analista de credito. Gere pareceres objetivos em portugues, "
-        "sem inventar dados ausentes e usando apenas as informacoes fornecidas."
+        "You are a credit analyst. Generate objective credit opinions in English, "
+        "do not invent missing data, and use only the information provided."
     )
     with output_path.open("w", encoding="utf-8", newline="") as jsonl_file:
         for row in rows:
@@ -292,10 +292,10 @@ def write_csv(rows, output_path):
     fields = [
         "label",
         "loan_status",
-        "entrada",
-        "recomendacao",
-        "risco",
-        "parecer",
+        "input",
+        "recommendation",
+        "risk",
+        "opinion",
         *[column for column in COLUMNS if column != "loan_status"],
     ]
     with output_path.open("w", encoding="utf-8", newline="") as csv_file:
@@ -305,38 +305,38 @@ def write_csv(rows, output_path):
             opinion = build_opinion(row)
             writer.writerow(
                 {
-                    "label": "bom_pagador" if row.get("loan_status") == POSITIVE_STATUS else "perda",
+                    "label": "good_payer" if row.get("loan_status") == POSITIVE_STATUS else "loss",
                     "loan_status": row.get("loan_status"),
-                    "entrada": build_input(row),
-                    "recomendacao": opinion["recomendacao"],
-                    "risco": opinion["risco"],
-                    "parecer": opinion["parecer"],
+                    "input": build_input(row),
+                    "recommendation": opinion["recommendation"],
+                    "risk": opinion["risk"],
+                    "opinion": opinion["opinion"],
                     **{column: row.get(column, "") for column in COLUMNS if column != "loan_status"},
                 }
             )
 
 
 def parse_args():
-    parser = argparse.ArgumentParser(description="Gera pareceres de credito para fine tuning.")
-    parser.add_argument("--input", default="accepted_2007_to_2018Q4.csv", help="CSV de emprestimos aceitos.")
-    parser.add_argument("--total", type=int, default=2000, help="Total de exemplos a gerar. Deve ser par.")
-    parser.add_argument("--seed", type=int, default=42, help="Semente da amostragem.")
-    parser.add_argument("--jsonl", default="pareceres_credito_2000.jsonl", help="Arquivo JSONL de saida.")
-    parser.add_argument("--csv", default="pareceres_credito_2000.csv", help="Arquivo CSV de auditoria.")
+    parser = argparse.ArgumentParser(description="Generate credit opinions for fine tuning.")
+    parser.add_argument("--input", default="accepted_2007_to_2018Q4.csv", help="Accepted loans CSV.")
+    parser.add_argument("--total", type=int, default=2000, help="Total number of examples to generate. Must be even.")
+    parser.add_argument("--seed", type=int, default=42, help="Sampling seed.")
+    parser.add_argument("--jsonl", default="credit_opinions_2000.jsonl", help="Output JSONL file.")
+    parser.add_argument("--csv", default="credit_opinions_2000.csv", help="Audit CSV file.")
     return parser.parse_args()
 
 
 def main():
     args = parse_args()
     if args.total <= 0 or args.total % 2 != 0:
-        raise SystemExit("--total deve ser um numero par e maior que zero.")
+        raise SystemExit("--total must be an even number greater than zero.")
 
     input_path = Path(args.input)
     rows, positive_seen, negative_seen = sample_rows(input_path, args.total // 2, args.seed)
     write_jsonl(rows, Path(args.jsonl))
     write_csv(rows, Path(args.csv))
-    print(f"Gerados {len(rows)} exemplos.")
-    print(f"Base elegivel encontrada: {positive_seen} Fully Paid e {negative_seen} Charged Off.")
+    print(f"Generated {len(rows)} examples.")
+    print(f"Eligible base found: {positive_seen} Fully Paid and {negative_seen} Charged Off.")
     print(f"JSONL: {args.jsonl}")
     print(f"CSV: {args.csv}")
 
